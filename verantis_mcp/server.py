@@ -57,7 +57,7 @@ TOOLS = [
                 "exclude_concentrated": {"type": "boolean", "default": False,
                                          "description": "exclude services from operators with many listings under one registrable owner (a neutral concentration signal, not a fraud claim)"},
                 "proven_only": {"type": "boolean", "default": False,
-                                "description": "only services that have EARNED reputation over time (excludes 'unproven' new services and 'watch' services whose on-chain payments are concentrated / not yet broadly distributed). Reputation is earned via consistent history + on-chain buyer retention; a brand-new well-behaved service is verified but unproven, not top-trust."},
+                                "description": "only services that have EARNED reputation over time (excludes 'new' services and 'watch' services whose on-chain payments are concentrated / not yet broadly distributed). Reputation is earned via consistent history + on-chain buyer retention; a brand-new well-behaved service is verified but new, not top-trust."},
                 "require_fresh": {"type": "boolean", "default": False,
                                   "description": "live re-probe stale results before returning — use before paying real money; adds ~1s per stale service"},
             },
@@ -206,7 +206,7 @@ def main():
                     "protocolVersion", PROTOCOL_VERSION),
                 "capabilities": {"tools": {}},
                 "serverInfo": {"name": "verantis",
-                               "version": "0.1.1"},
+                               "version": "0.1.2"},
             })
         elif method == "notifications/initialized":
             continue  # notification, no response
