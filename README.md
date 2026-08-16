@@ -21,6 +21,15 @@ Learn more: **[verantis.ai](https://verantis.ai)** · methodology: [verantis.ai/
 | `check_wallet` | **Pre-payment guard** — pass the recipient wallet a service asked you to pay; get its earned reputation tier, on-chain buyer retention, and which services it fronts. |
 | `directory_stats` | Index-level stats: services, verification breakdown, freshness. |
 
+## What it can and can't do
+
+- **Can:** read the public directory; check a service or wallet before your agent pays.
+- **Can't:** move money, see your keys, or read your files.
+- Only ever calls `api.verantis.ai` — nothing else.
+- Writes nothing (hosted endpoint) / only a random anonymous install id (local `pip`/`uvx`).
+- No account, no API key. MIT-licensed. Read-only.
+- How we measure: [verantis.ai/methodology](https://verantis.ai/methodology)
+
 ## Install & connect
 
 Two ways to connect — pick one.
