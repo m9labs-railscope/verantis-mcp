@@ -1,5 +1,7 @@
 # Verantis MCP
 
+<!-- mcp-name: io.github.m9labs-railscope/verantis-mcp -->
+
 **The verified directory for machine payments — as an MCP tool.**
 
 Give any MCP-capable agent (Claude, Cursor, agent frameworks) the ability to check
