@@ -21,9 +21,11 @@ Learn more: **[verantis.ai](https://verantis.ai)** · methodology: [verantis.ai/
 | `check_wallet` | **Pre-payment guard** — pass the recipient wallet a service asked you to pay; get its earned reputation tier, on-chain buyer retention, and which services it fronts. |
 | `directory_stats` | Index-level stats: services, verification breakdown, freshness. |
 
-## Install & configure
+## Install & connect
 
-The server runs over stdio. Easiest is with [`uvx`](https://docs.astral.sh/uv/) (no install step):
+Two ways to connect — pick one.
+
+### Local (stdio) — via [`uvx`](https://docs.astral.sh/uv/), no install step
 
 **Claude Desktop** (`claude_desktop_config.json`) or any MCP client:
 
@@ -41,6 +43,21 @@ The server runs over stdio. Easiest is with [`uvx`](https://docs.astral.sh/uv/) 
 Prefer pip? `pip install verantis-mcp`, then use `"command": "verantis-mcp"` with no args.
 
 **Cursor** (`~/.cursor/mcp.json`): same block under `mcpServers`.
+
+### Hosted (no install) — connect by URL
+
+For any client that supports remote / streamable-HTTP MCP servers, point it
+straight at the hosted endpoint — nothing to install, no Python:
+
+```json
+{
+  "mcpServers": {
+    "verantis": { "url": "https://api.verantis.ai/mcp" }
+  }
+}
+```
+
+Clients that only speak local stdio can bridge with `npx mcp-remote https://api.verantis.ai/mcp`.
 
 Restart your client, and the four tools appear.
 
