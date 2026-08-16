@@ -206,7 +206,7 @@ def main():
                     "protocolVersion", PROTOCOL_VERSION),
                 "capabilities": {"tools": {}},
                 "serverInfo": {"name": "verantis",
-                               "version": "0.1.2"},
+                               "version": "0.1.3"},
             })
         elif method == "notifications/initialized":
             continue  # notification, no response
