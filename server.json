@@ -1,0 +1,22 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-07-09/server.schema.json",
+  "name": "io.github.m9labs-railscope/verantis-mcp",
+  "description": "The verified directory for machine payments (x402 & MPP): find live-verified services and check a recipient wallet's earned reputation before your agent pays.",
+  "repository": { "url": "https://github.com/m9labs-railscope/verantis-mcp", "source": "github" },
+  "version": "0.1.0",
+  "packages": [
+    {
+      "registry_type": "pypi",
+      "identifier": "verantis-mcp",
+      "version": "0.1.0",
+      "transport": { "type": "stdio" },
+      "environment_variables": [
+        {
+          "name": "VERANTIS_API_BASE",
+          "description": "Override the Verantis API base URL (defaults to https://api.verantis.ai).",
+          "is_required": false
+        }
+      ]
+    }
+  ]
+}

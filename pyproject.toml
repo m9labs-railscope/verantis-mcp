@@ -1,0 +1,30 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "verantis-mcp"
+version = "0.1.0"
+description = "MCP server for Verantis — the verified directory for machine payments (x402 & MPP). Find live-verified services and check a wallet before your agent pays."
+readme = "README.md"
+requires-python = ">=3.9"
+license = "MIT"
+authors = [{ name = "Verantis" }]
+keywords = ["mcp", "model-context-protocol", "x402", "mpp", "machine-payments", "agent-payments", "stablecoin", "usdc", "verantis"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+]
+dependencies = []   # standard library only
+
+[project.urls]
+Homepage = "https://verantis.ai"
+Documentation = "https://verantis.ai/api"
+Repository = "https://github.com/m9labs-railscope/verantis-mcp"
+
+[project.scripts]
+verantis-mcp = "verantis_mcp.server:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["verantis_mcp"]
