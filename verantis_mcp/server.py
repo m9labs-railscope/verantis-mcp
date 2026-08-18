@@ -32,11 +32,13 @@ TOOLS = [
         "name": "find_paid_service",
         "description": (
             "Search Verantis's verified directory of machine-payable "
-            "services (x402, MPP). Every result includes verification "
-            "status from a live unpaid probe: whether the endpoint "
-            "currently returns a valid 402 payment challenge, the live "
-            "price from that challenge, and when it was last probed. "
-            "Prefer verified=true results before paying anyone."),
+            "services (x402, MPP). Results are UNIFIED per service (host): "
+            "each carries its settlement rails ('rails': base / solana / "
+            "tempo), and every rail has its OWN reputation, price, and buyer "
+            "retention — never blended. Pass 'chain' and 'matched_rail' marks "
+            "that chain's rail so you see the reputation for the rail you'll "
+            "actually pay on. 'coming_soon' lists advertised chains not yet "
+            "measured. Prefer verified=true before paying anyone."),
         "inputSchema": {
             "type": "object",
             "properties": {
@@ -66,9 +68,10 @@ TOOLS = [
     },
     {
         "name": "get_service",
-        "description": ("Full Verantis record for one service domain, "
-                        "including verification provenance (probe time, "
-                        "classification, live vs listed price, pay-to)."),
+        "description": ("Full unified record for one service host: every "
+                        "settlement rail it accepts on, each with its own "
+                        "reputation, price, buyers, volume and history, plus "
+                        "coming-soon chains. Pass the host (domain)."),
         "inputSchema": {
             "type": "object",
             "properties": {"domain": {"type": "string"}},
@@ -85,10 +88,14 @@ TOOLS = [
         "description": (
             "Check a recipient wallet BEFORE your agent pays it — a pre-payment "
             "guard. Pass the pay-to address a service asked you to pay; returns "
-            "whether Verantis knows the wallet, its EARNED reputation tier, "
-            "human-readable reasons, on-chain buyer retention (distinct buyers, "
-            "repeat rate, distribution), and which services it fronts. An unknown "
-            "or low-reputation recipient is a reason to pause."),
+            "whether Verantis knows the wallet, its EARNED reputation tier, and "
+            "human-readable reasons. A wallet IS a settlement rail, so the reply "
+            "names the rail it settles on ('rail': chain + protocols), its host, "
+            "on-chain buyer retention (distinct buyers, repeat rate, distribution), "
+            "and the host's OTHER rails ('also_settles_on'). If 'shared_wallet' is "
+            "true the address fronts many services (a relay/treasury) so the "
+            "reputation reflects the pool, not one service — treat with care. An "
+            "unknown or low-reputation recipient is a reason to pause."),
         "inputSchema": {
             "type": "object",
             "properties": {
@@ -143,16 +150,14 @@ def call_tool(name, args):
             "max_price": args.get("max_price_usd"),
             "chain": args.get("chain"),
             "protocol": args.get("protocol"),
+            "category": args.get("category"),
             "limit": args.get("limit", 10),
             "min_score": args.get("min_score"),
-            "max_latency_ms": args.get("max_latency_ms"),
-            "exclude_concentrated": "true" if args.get("exclude_concentrated") else None,
             "proven_only": "true" if args.get("proven_only") else None,
-            "fresh": "true" if args.get("require_fresh") else None,
             "_source": "mcp",
         }
-        data = _api_get("/v1/services", params)
-        results = data.get("services", [])
+        data = _api_get("/v1/entities", params)
+        results = data.get("entities", [])
         if not results:
             return {"results": [], "note": (
                 "No services matched. If verified_only was true, retrying "
@@ -163,7 +168,7 @@ def call_tool(name, args):
     if name == "get_service":
         try:
             return _api_get(
-                f"/v1/services/{urllib.parse.quote(args['domain'])}",
+                f"/v1/entities/{urllib.parse.quote(args['domain'])}",
                 {"_source": "mcp"})
         except urllib.error.HTTPError as e:
             if e.code == 404:
