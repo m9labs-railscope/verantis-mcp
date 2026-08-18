@@ -1,0 +1,22 @@
+# Smithery config — https://smithery.ai/docs
+# Verantis MCP is a thin stdio client of the public Verantis API (no secrets,
+# no dataset). Smithery runs it via uvx from PyPI.
+startCommand:
+  type: stdio
+  configSchema:
+    type: object
+    properties:
+      verantisApiBase:
+        type: string
+        title: Verantis API base URL
+        description: Override the Verantis API base (defaults to https://api.verantis.ai).
+        default: "https://api.verantis.ai"
+    required: []
+  commandFunction: |-
+    (config) => ({
+      command: "uvx",
+      args: ["verantis-mcp"],
+      env: { VERANTIS_API_BASE: (config && config.verantisApiBase) || "https://api.verantis.ai" }
+    })
+  exampleConfig:
+    verantisApiBase: "https://api.verantis.ai"
