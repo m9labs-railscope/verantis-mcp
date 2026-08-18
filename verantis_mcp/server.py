@@ -30,6 +30,7 @@ PROTOCOL_VERSION = "2024-11-05"
 TOOLS = [
     {
         "name": "find_paid_service",
+        "annotations": {"title": "Find a paid service", "readOnlyHint": True, "openWorldHint": True},
         "description": (
             "Search Verantis's verified directory of machine-payable "
             "services (x402, MPP). Results are UNIFIED per service (host): "
@@ -50,8 +51,8 @@ TOOLS = [
                                   "description": "max price per call in USD"},
                 "chain": {"type": "string",
                           "description": "settlement network, e.g. base, solana, polygon, tempo"},
-                "protocol": {"type": "string", "enum": ["x402", "mpp"]},
-                "limit": {"type": "integer", "default": 10},
+                "protocol": {"type": "string", "enum": ["x402", "mpp"], "description": "restrict to one payment protocol: x402 or mpp"},
+                "limit": {"type": "integer", "default": 10, "description": "maximum number of results to return (default 10)"},
                 "min_score": {"type": "integer",
                               "description": "minimum trust score 0-100 — set high (e.g. 85) for money-moving tasks"},
                 "max_latency_ms": {"type": "integer",
@@ -68,23 +69,26 @@ TOOLS = [
     },
     {
         "name": "get_service",
+        "annotations": {"title": "Get a service record", "readOnlyHint": True, "openWorldHint": True},
         "description": ("Full unified record for one service host: every "
                         "settlement rail it accepts on, each with its own "
                         "reputation, price, buyers, volume and history, plus "
                         "coming-soon chains. Pass the host (domain)."),
         "inputSchema": {
             "type": "object",
-            "properties": {"domain": {"type": "string"}},
+            "properties": {"domain": {"type": "string", "description": "the service host / domain to look up, e.g. api.nansen.ai"}},
             "required": ["domain"],
         },
     },
     {
         "name": "directory_stats",
+        "annotations": {"title": "Directory statistics", "readOnlyHint": True, "openWorldHint": True},
         "description": "Index-level statistics: services, verification breakdown, data freshness.",
         "inputSchema": {"type": "object", "properties": {}},
     },
     {
         "name": "check_wallet",
+        "annotations": {"title": "Check a recipient wallet", "readOnlyHint": True, "openWorldHint": True},
         "description": (
             "Check a recipient wallet BEFORE your agent pays it — a pre-payment "
             "guard. Pass the pay-to address a service asked you to pay; returns "
