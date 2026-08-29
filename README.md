@@ -4,6 +4,10 @@
 
 **The verified directory for machine payments — as an MCP tool.**
 
+[![Install in VS Code](https://img.shields.io/badge/VS_Code-Add_Verantis-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://vscode.dev/redirect/mcp/install?name=verantis&config=%7B%22type%22%3A%22http%22%2C%22url%22%3A%22https%3A%2F%2Fapi.verantis.ai%2Fmcp%22%7D)
+[![PyPI](https://img.shields.io/pypi/v/verantis-mcp?style=flat-square&color=0098FF&label=PyPI)](https://pypi.org/project/verantis-mcp/)
+[![MCP Registry](https://img.shields.io/badge/MCP-Registry-000?style=flat-square)](https://registry.modelcontextprotocol.io/v0/servers?search=verantis)
+
 Give any MCP-capable agent (Claude, Cursor, agent frameworks) the ability to check
 what it's about to pay *before* it pays. Verantis continuously probes machine-payable
 services across **x402** and **MPP**, measures on-chain reputation, and publishes a
@@ -54,6 +58,8 @@ Prefer pip? `pip install verantis-mcp`, then use `"command": "verantis-mcp"` wit
 **Cursor** (`~/.cursor/mcp.json`): same block under `mcpServers`.
 
 ### Hosted (no install) — connect by URL
+
+**VS Code / Copilot:** [one-click add ▸](https://vscode.dev/redirect/mcp/install?name=verantis&config=%7B%22type%22%3A%22http%22%2C%22url%22%3A%22https%3A%2F%2Fapi.verantis.ai%2Fmcp%22%7D) — or add it manually below.
 
 For any client that supports remote / streamable-HTTP MCP servers, point it
 straight at the hosted endpoint — nothing to install, no Python:
