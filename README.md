@@ -25,6 +25,11 @@ Learn more: **[verantis.ai](https://verantis.ai)** · methodology: [verantis.ai/
 | `check_wallet` | **Pre-payment guard** — pass the recipient wallet a service asked you to pay; get its earned reputation tier, on-chain buyer retention, and which services it fronts. |
 | `directory_stats` | Index-level stats: services, verification breakdown, freshness. |
 
+Activity authority: current `payments`, `buyers`, `repeat`, and `volume_usd`
+fields describe observed recipient-wallet inbound activity unless a rail
+explicitly reports a stronger `service_attribution` value. They do not by
+themselves prove which hosted service operation ran or delivered a result.
+
 ## What it can and can't do
 
 - **Can:** read the public directory; check a service or wallet before your agent pays.

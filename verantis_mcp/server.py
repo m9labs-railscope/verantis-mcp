@@ -36,9 +36,13 @@ TOOLS = [
             "services (x402, MPP). Results are UNIFIED per service (host): "
             "each carries its settlement rails ('rails': base / solana / "
             "tempo), and every rail has its OWN reputation, price, and buyer "
-            "retention — never blended. Pass 'chain' and 'matched_rail' marks "
-            "that chain's rail so you see the reputation for the rail you'll "
-            "actually pay on. 'coming_soon' lists advertised chains not yet "
+            "retention — never blended across rails. Current payments, buyers, "
+            "repeat, and volume fields describe observed recipient-wallet "
+            "inbound activity unless that rail explicitly reports a stronger "
+            "service_attribution value; they do not by themselves prove which "
+            "service operation ran. Pass 'chain' and 'matched_rail' marks that "
+            "chain's rail so you see the reputation for the rail you'll actually "
+            "pay on. 'coming_soon' lists advertised chains not yet "
             "measured. Prefer verified=true before paying anyone."),
         "inputSchema": {
             "type": "object",
@@ -72,8 +76,11 @@ TOOLS = [
         "annotations": {"title": "Get a service record", "readOnlyHint": True, "openWorldHint": True},
         "description": ("Full unified record for one service host: every "
                         "settlement rail it accepts on, each with its own "
-                        "reputation, price, buyers, volume and history, plus "
-                        "coming-soon chains. Pass the host (domain)."),
+                        "reputation, price, wallet-inbound activity and history. "
+                        "Treat buyers, payments, repeat, and volume as recipient-"
+                        "wallet observations unless service_attribution explicitly "
+                        "binds them to the service. Includes coming-soon chains. "
+                        "Pass the host (domain)."),
         "inputSchema": {
             "type": "object",
             "properties": {"domain": {"type": "string", "description": "the service host / domain to look up, e.g. api.nansen.ai"}},
@@ -146,6 +153,36 @@ def _api_get(path, params=None):
         return json.loads(r.read())
 
 
+def _label_measurement_authority(entity):
+    """Add conservative authority labels to wallet-derived activity metrics.
+
+    The public API may later return a stronger operation binding. ``setdefault``
+    preserves that backend authority while keeping today's legacy fields useful
+    without presenting recipient-wallet activity as service demand.
+    """
+    if not isinstance(entity, dict):
+        return entity
+    labelled = False
+    rails = entity.get("rails")
+    if not isinstance(rails, list):
+        return entity
+    for rail in rails:
+        if not isinstance(rail, dict):
+            continue
+        if not any(key in rail for key in ("payments", "buyers", "repeat", "volume_usd")):
+            continue
+        rail.setdefault("activity_scope", "recipient_wallet_inbound")
+        rail.setdefault("service_attribution", "unresolved")
+        labelled = True
+    if labelled:
+        entity.setdefault(
+            "measurement_notice",
+            "payments, buyers, repeat, and volume_usd are recipient-wallet "
+            "observations unless a rail explicitly reports stronger service_attribution",
+        )
+    return entity
+
+
 def call_tool(name, args):
     if name == "find_paid_service":
         params = {
@@ -161,7 +198,7 @@ def call_tool(name, args):
             "_source": "mcp",
         }
         data = _api_get("/v1/entities", params)
-        results = data.get("entities", [])
+        results = [_label_measurement_authority(entity) for entity in data.get("entities", [])]
         if not results:
             return {"results": [], "note": (
                 "No services matched. If verified_only was true, retrying "
@@ -171,9 +208,10 @@ def call_tool(name, args):
                 "data_generated_at": data.get("data_generated_at")}
     if name == "get_service":
         try:
-            return _api_get(
-                f"/v1/entities/{urllib.parse.quote(args['domain'])}",
-                {"_source": "mcp"})
+            return _label_measurement_authority(
+                _api_get(
+                    f"/v1/entities/{urllib.parse.quote(args['domain'])}",
+                    {"_source": "mcp"}))
         except urllib.error.HTTPError as e:
             if e.code == 404:
                 return {"error": "unknown domain", "domain": args.get("domain")}
