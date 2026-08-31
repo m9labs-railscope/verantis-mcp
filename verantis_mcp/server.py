@@ -39,7 +39,11 @@ TOOLS = [
             "retention — never blended. Pass 'chain' and 'matched_rail' marks "
             "that chain's rail so you see the reputation for the rail you'll "
             "actually pay on. 'coming_soon' lists advertised chains not yet "
-            "measured. Prefer verified=true before paying anyone."),
+            "measured. Each rail's 'wallet_scope' says if its pay-to wallet "
+            "is 'dedicated' (the buyers/payments/volume are this service's own) "
+            "or 'shared' (a relay/treasury fronting 'wallet_services' services, "
+            "so those figures are the pool's inbound, not this service alone). "
+            "Prefer verified=true before paying anyone."),
         "inputSchema": {
             "type": "object",
             "properties": {
@@ -73,7 +77,11 @@ TOOLS = [
         "description": ("Full unified record for one service host: every "
                         "settlement rail it accepts on, each with its own "
                         "reputation, price, buyers, volume and history, plus "
-                        "coming-soon chains. Pass the host (domain)."),
+                        "coming-soon chains. Each rail's 'wallet_scope' marks a "
+                        "'shared' pay-to wallet (buyers/volume are pooled inbound "
+                        "across 'wallet_services' services, not this one alone) "
+                        "vs 'dedicated' (this service's own). Pass the host "
+                        "(domain)."),
         "inputSchema": {
             "type": "object",
             "properties": {"domain": {"type": "string", "description": "the service host / domain to look up, e.g. api.nansen.ai"}},
